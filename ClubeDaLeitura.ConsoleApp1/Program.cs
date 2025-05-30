@@ -27,6 +27,10 @@ namespace ClubeDaLeitura.ConsoleApp1
                         telaAmigo.EditarAmigos();
                         break;
 
+                    case '3':
+                        telaAmigo.ExcluirAmigos();
+                        break;
+
                     case '4':
                         telaAmigo.VisualizarAmigos(true);
                         break;
@@ -80,9 +84,7 @@ namespace ClubeDaLeitura.ConsoleApp1
                 Console.WriteLine($"\nAmigo \"{amigo.nome}\" cadastrado com exito!");
                 Console.ReadLine();
             }
-
             
-
             public void EditarAmigos()
             {
                 ExibirCabecalho();
@@ -120,6 +122,50 @@ namespace ClubeDaLeitura.ConsoleApp1
                 nomeSelecionado.telefone = amigoAtualizado.telefone;
 
                 Console.WriteLine($"\nAmigo \"{nomeSelecionado.nome}\" atualizado com exito!");
+                Console.ReadLine();
+            }
+
+            public void ExcluirAmigos()
+            {
+                ExibirCabecalho();
+
+                Console.WriteLine("Exclusão de Amigos");
+                Console.WriteLine();
+
+                VisualizarAmigos(false);
+
+                Console.WriteLine("Escolha o Amigo que deseja excluir: ");
+                string amigoSelecionado = Console.ReadLine();
+
+                Amigo nomeSelecionado = null;
+
+                Amigo[] amigos = repositorioAmigo.amigos;
+
+                for (int i = 0; i < repositorioAmigo.amigos.Length; i++)
+                {
+                    Amigo a = amigos[i];
+
+                    if (a == null)
+                        continue;
+
+                    if (a.nome == amigoSelecionado)
+                        nomeSelecionado = a;
+                }
+
+                if (nomeSelecionado == null)
+                    return;
+
+                
+                for (int i = 0; i < repositorioAmigo.amigos.Length; i++)
+                {
+                    if (repositorioAmigo.amigos[i] == nomeSelecionado)
+                    {
+                        repositorioAmigo.amigos[i] = null;
+                        break;
+                    }
+                }
+
+                Console.WriteLine($"\nAmigo \"{nomeSelecionado.nome}\" excluído com sucesso!");
                 Console.ReadLine();
             }
 
@@ -176,7 +222,7 @@ namespace ClubeDaLeitura.ConsoleApp1
                 }
             }
 
-
+           
 
             //Dados
             public class RepositorioAmigo
