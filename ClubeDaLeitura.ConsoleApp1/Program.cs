@@ -1,5 +1,6 @@
-﻿using System.Reflection.Metadata;
-using static ClubeDaLeitura.ConsoleApp1.Program.RepositorioAmigo;
+﻿
+
+using static ClubeDaLeitura.ConsoleApp1.Program.TelaAmigo;
 
 namespace ClubeDaLeitura.ConsoleApp1
 {
@@ -22,8 +23,12 @@ namespace ClubeDaLeitura.ConsoleApp1
                         telaAmigo.CadastrarAmigos();
                         break;
 
+                    case '2':
+                        telaAmigo.EditarAmigos();
+                        break;
+
                     case '4':
-                        telaAmigo.VisualizarAmigos();
+                        telaAmigo.VisualizarAmigos(true);
                         break;
                 }
             }
@@ -36,7 +41,7 @@ namespace ClubeDaLeitura.ConsoleApp1
 
             public void ExibirCabecalho()
             {
-        
+                Console.Clear();
                 Console.WriteLine("Clube do Livro");
                 Console.WriteLine();
             }
@@ -67,22 +72,7 @@ namespace ClubeDaLeitura.ConsoleApp1
                 Console.WriteLine("Cadastro de Amigos");
 
                 Console.Clear();
-                Console.WriteLine("Digite o nome do amigo: ");
-                string nomeAmigo = Console.ReadLine();
-
-                Console.Clear();
-                Console.WriteLine("Digite o responsável: ");
-                string responsavelAmigo = Console.ReadLine();
-
-                Console.Clear();
-                Console.WriteLine("Digite o telefone: ");
-                string telefoneAmigo = Console.ReadLine();
-
-
-                Amigo amigo = new Amigo();
-                amigo.nome = nomeAmigo;
-                amigo.responsavel = responsavelAmigo;
-                amigo.telefone = telefoneAmigo;
+                Amigo amigo = ObterDados();
 
                 repositorioAmigo.amigos[0] = amigo;
 
@@ -91,8 +81,74 @@ namespace ClubeDaLeitura.ConsoleApp1
                 Console.ReadLine();
             }
 
-            public void VisualizarAmigos()
+            
+
+            public void EditarAmigos()
             {
+                ExibirCabecalho();
+
+                Console.WriteLine("Edição de Amigos");
+                Console.WriteLine();
+
+                VisualizarAmigos(false);
+
+                Console.WriteLine("Escolha o Amigo que deseja editar: ");
+                string amigoSelecionado = Console.ReadLine();
+
+                Amigo nomeSelecionado = null;
+
+                Amigo[] amigos = repositorioAmigo.amigos;
+
+                for (int i = 0; i < repositorioAmigo.amigos.Length; i++)
+                {
+                    Amigo a = amigos[i];
+
+                    if (a == null)
+                        continue;
+
+                    if (a.nome == amigoSelecionado)
+                        nomeSelecionado = a;
+                }
+
+                if (nomeSelecionado == null) 
+                    return;
+
+                Amigo amigoAtualizado = ObterDados();
+
+                nomeSelecionado.nome = amigoAtualizado.nome;
+                nomeSelecionado.responsavel = amigoAtualizado.responsavel;
+                nomeSelecionado.telefone = amigoAtualizado.telefone;
+
+                Console.WriteLine($"\nAmigo \"{nomeSelecionado.nome}\" atualizado com exito!");
+                Console.ReadLine();
+            }
+
+            public Amigo ObterDados()
+            {
+                Console.WriteLine("Digite o nome do amigo: ");
+                string nomeAmigo = Console.ReadLine();
+
+                
+                Console.WriteLine("Digite o responsável: ");
+                string responsavelAmigo = Console.ReadLine();
+
+                
+                Console.WriteLine("Digite o telefone: ");
+                string telefoneAmigo = Console.ReadLine();
+
+
+                Amigo amigo = new Amigo();
+                amigo.nome = nomeAmigo;
+                amigo.responsavel = responsavelAmigo;
+                amigo.telefone = telefoneAmigo;
+                return amigo;
+            }
+
+            public void VisualizarAmigos(bool exibirCabecalho)
+                
+            {
+                if (exibirCabecalho == true)
+                    ExibirCabecalho();
 
                 Console.Clear();
 
@@ -109,32 +165,34 @@ namespace ClubeDaLeitura.ConsoleApp1
                 {
                     Amigo a = amigos[i];
 
-                    if (a == null) 
+                    if (a == null)
                         continue;
 
                     Console.WriteLine(
                     "{0, -10} | {1, -10} | {2, -11}",
-                    a.nome, a.responsavel, a.telefone); 
+                    a.nome, a.responsavel, a.telefone);
 
-                    Console.ReadLine() ;
+                    Console.ReadLine();
                 }
             }
-        }
 
-        //Dados
-        public class RepositorioAmigo
-        {
-            public Amigo[] amigos = new Amigo[100];
 
-           
-    }
-       
-        //Negócio
-        public class Amigo
-        {
-            public string nome;
-            public string responsavel;
-            public string telefone;
+
+            //Dados
+            public class RepositorioAmigo
+            {
+                public Amigo[] amigos = new Amigo[100];
+
+
+            }
+
+            //Negócio
+            public class Amigo
+            {
+                public string nome;
+                public string responsavel;
+                public string telefone;
+            }
         }
     }
 }
