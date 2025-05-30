@@ -1,4 +1,5 @@
 ﻿using System.Reflection.Metadata;
+using static ClubeDaLeitura.ConsoleApp1.Program.RepositorioAmigo;
 
 namespace ClubeDaLeitura.ConsoleApp1
 {
@@ -18,21 +19,31 @@ namespace ClubeDaLeitura.ConsoleApp1
                 switch (opcaoEscolhida)
                 {
                     case '1':
-                        telaAmigo.CadastrarAmigo();
+                        telaAmigo.CadastrarAmigos();
                         break;
 
+                    case '4':
+                        telaAmigo.VisualizarAmigos();
+                        break;
                 }
             }
         }
 
+        //Apresentação
         public class TelaAmigo
         {
+            public RepositorioAmigo repositorioAmigo = new RepositorioAmigo();
+
+            public void ExibirCabecalho()
+            {
+        
+                Console.WriteLine("Clube do Livro");
+                Console.WriteLine();
+            }
+
             public char ApresentarMenu()
             {
-                Console.Clear();
-                Console.WriteLine("Clube do Livro");
-
-                Console.WriteLine();
+                ExibirCabecalho();
 
                 Console.WriteLine("1 - Cadastrar Amigos");
                 Console.WriteLine("2 - Editar Amigos");
@@ -49,12 +60,9 @@ namespace ClubeDaLeitura.ConsoleApp1
                 return opcaoEscolhida;
             }
 
-            public void CadastrarAmigo()
+            public void CadastrarAmigos()
             {
-                Console.Clear();
-                Console.WriteLine("Clube do Livro");
-                Console.WriteLine();
-
+                ExibirCabecalho();
 
                 Console.WriteLine("Cadastro de Amigos");
 
@@ -76,12 +84,52 @@ namespace ClubeDaLeitura.ConsoleApp1
                 amigo.responsavel = responsavelAmigo;
                 amigo.telefone = telefoneAmigo;
 
+                repositorioAmigo.amigos[0] = amigo;
+
                 Console.Clear();
                 Console.WriteLine($"\nAmigo \"{amigo.nome}\" cadastrado com exito!");
                 Console.ReadLine();
             }
+
+            public void VisualizarAmigos()
+            {
+
+                Console.Clear();
+
+                Console.WriteLine("Visualização de Amigos");
+                Console.WriteLine();
+
+                Console.WriteLine(
+                    "{0, -10} | {1, -10} | {2, -11}",
+                    "Nome", "Responsável", "Telefone");
+
+                Amigo[] amigos = repositorioAmigo.amigos;
+
+                for (int i = 0; i < repositorioAmigo.amigos.Length; i++)
+                {
+                    Amigo a = amigos[i];
+
+                    if (a == null) 
+                        continue;
+
+                    Console.WriteLine(
+                    "{0, -10} | {1, -10} | {2, -11}",
+                    a.nome, a.responsavel, a.telefone); 
+
+                    Console.ReadLine() ;
+                }
+            }
         }
 
+        //Dados
+        public class RepositorioAmigo
+        {
+            public Amigo[] amigos = new Amigo[100];
+
+           
+    }
+       
+        //Negócio
         public class Amigo
         {
             public string nome;
