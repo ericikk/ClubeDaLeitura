@@ -12,7 +12,7 @@ namespace ClubeDaLeitura.ConsoleApp1
             public void ExibirCabecalho()
             {
                 Console.Clear();
-                Console.WriteLine("Clube do Livro");
+                Console.WriteLine("Gestão de Amigos");
                 Console.WriteLine();
             }
 
