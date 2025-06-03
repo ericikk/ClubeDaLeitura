@@ -46,12 +46,12 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloCaixas
 
             Caixa caixa = obterDados();
 
-            //if (!ValidarCaixa(caixa, out string mensagemErro))
-            //{
-            //    Console.WriteLine(mensagemErro);
-            //    Console.ReadLine();
-            //    return;
-            //}
+            if (!ValidarCaixa(caixa, out string mensagemErro))
+            {
+                Console.WriteLine(mensagemErro);
+                Console.ReadLine();
+                return;
+            }
 
             repositorioCaixa.CadastrarCaixa(caixa);
 
@@ -150,11 +150,28 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloCaixas
             Console.WriteLine("Digite a etiqueta da caixa: ");
             string etiqueta = Console.ReadLine();
 
+            string[] paletaCores = { "Vermelho", "Verde", "Azul", "Amarelo", "Preto", "Branco", "Roxo", "Rosa", "Laranja" };
             Console.WriteLine("Selecione a cor da caixa: ");
-            string cor = Console.ReadLine();
+            for (int i = 0; i < paletaCores.Length; i++)
+                Console.WriteLine($"{i + 1} - {paletaCores[i]}");
 
-            Console.WriteLine("Dias de empréstimo: ");
+            int corIndex = 0;
+            while (true)
+            {
+                Console.Write("Digite o número da cor desejada: ");
+                string corInput = Console.ReadLine();
+                if (int.TryParse(corInput, out corIndex) && corIndex >= 1 && corIndex <= paletaCores.Length)
+                    break;
+                Console.WriteLine("Opção inválida. Tente novamente.");
+            }
+            string cor = paletaCores[corIndex - 1];
+
+
+            Console.WriteLine("Dias de empréstimo (pressione Enter para padrão 7): ");
             string diasEmprestimo = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(diasEmprestimo))
+                diasEmprestimo = "7";
 
             Caixa caixa = new Caixa();
             caixa.etiqueta = etiqueta;
@@ -163,31 +180,33 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloCaixas
             return caixa;
         }
 
-        //public bool ValidarCaixas(Caixa caixa, out string mensagemErro)
-        //{
-        //    mensagemErro = "";
+        public bool ValidarCaixa(Caixa caixa, out string mensagemErro)
+        {
+            mensagemErro = "";
 
-        //    if (string.IsNullOrWhiteSpace(amigo.nome) || amigo.nome.Length < 3 || amigo.nome.Length > 100)
-        //    {
-        //        mensagemErro = "Nome deve ter entre 3 e 100 caracteres.";
-        //        return false;
-        //    }
+            if (string.IsNullOrWhiteSpace(caixa.etiqueta) || caixa.etiqueta.Length < 1 || caixa.etiqueta.Length > 50)
+            {
+                mensagemErro = "Etiqueta deve ter entre 1 e 50 caracteres.";
+                return false;
+            }
 
-        //    if (string.IsNullOrWhiteSpace(amigo.responsavel) || amigo.responsavel.Length < 3 || amigo.responsavel.Length > 100)
-        //    {
-        //        mensagemErro = "Nome do responsável deve ter entre 3 e 100 caracteres.";
-        //        return false;
-        //    }
+            if (caixa.etiqueta.Contains(" "))
+            {
+                mensagemErro = "A etiqueta não pode conter espaços.";
+                return false;
+            }
 
-        //    if (!Regex.IsMatch(amigo.telefone, @"^\(\d{2}\) \d{4,5}-\d{4}$"))
-        //    {
-        //        mensagemErro = "Telefone deve estar no formato (XX) XXXX-XXXX ou (XX) XXXXX-XXXX.";
-        //        return false;
-        //    }
+            // Verifica duplicidade de etiqueta
+            foreach (var c in repositorioCaixa.caixas)
+            {
+                if (c != null && c.etiqueta == caixa.etiqueta)
+                {
+                    mensagemErro = "Já existe uma caixa com essa etiqueta.";
+                    return false;
+                }
+            }
 
-        //    return true;
-        //}
-
-        
+            return true;
+        }
     }
 }
