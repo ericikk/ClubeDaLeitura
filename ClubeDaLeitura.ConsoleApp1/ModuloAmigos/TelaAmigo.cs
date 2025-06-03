@@ -191,6 +191,16 @@ namespace ClubeDaLeitura.ConsoleApp1
                     return false;
                 }
 
+                
+                foreach (var a in repositorioAmigo.amigos)
+                {
+                    if (a != null && a.nome == amigo.nome && a.telefone == amigo.telefone)
+                    {
+                        mensagemErro = "Já existe um amigo cadastrado com o mesmo nome e telefone.";
+                        return false;
+                    }
+                }
+
                 return true;
             }
         }
