@@ -7,9 +7,10 @@ using static ClubeDaLeitura.ConsoleApp1.Program;
 
 namespace ClubeDaLeitura.ConsoleApp1.ModuloCaixas
 {
-    partial class program
+    partial class Program
     {
-        public class RepositorioCaixa
+        public RepositorioCaixa repositorioCaixa = new RepositorioCaixa();
+        public class RepositorioCaixa 
         {
             public Caixa[] caixas = new Caixa[100];
             public int contadorCaixas = 0;

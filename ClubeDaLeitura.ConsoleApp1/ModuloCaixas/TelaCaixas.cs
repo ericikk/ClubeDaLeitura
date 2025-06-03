@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static ClubeDaLeitura.ConsoleApp1.ModuloCaixas.program;
+using static ClubeDaLeitura.ConsoleApp1.ModuloCaixas.Program;
 using static ClubeDaLeitura.ConsoleApp1.Program;
 
 namespace ClubeDaLeitura.ConsoleApp1.ModuloCaixas
 {
     public class TelaCaixas
     {
-        public RepositorioCaixa repositorioCaixa = new RepositorioCaixa();
+        private RepositorioCaixa repositorioCaixa = new RepositorioCaixa();
         public void ExibirCabecalho()
         {
             Console.Clear();
@@ -69,33 +69,23 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloCaixas
 
             VisualizarCaixas(false);
 
-            Console.WriteLine("Escolha a Caixa que deseja editar: ");
-            string caixaSelecionado = Console.ReadLine();
+            Console.WriteLine("Escolha a Etiqueta da Caixa que deseja editar: ");
+            string etiquetaSelecionada = Console.ReadLine();
 
-            Caixa caixaAtualizado = obterDados();
+            Caixa caixaAtualizada = obterDados();
 
-            //if (!ValidarAmigo(amigoAtualizado, out string mensagemErro))
-            //{
-            //    Console.WriteLine(mensagemErro);
-            //    Console.ReadLine();
-            //    return;
-            //}
+            bool conseguiuEditar = repositorioCaixa.EditarCaixa(etiquetaSelecionada, caixaAtualizada);
 
+            if (!conseguiuEditar)
+            {
+                Console.WriteLine("Não foi possível encontrar a caixa");
+                Console.ReadLine();
+                return;
+            }
 
-
-            //bool conseguiuEditar = repositorioAmigo.EditarAmigo(amigoSelecionado, amigoAtualizado);
-
-            //if (!conseguiuEditar)
-            //{
-            //    Console.WriteLine("Não foi possivel encontrar o amigo");
-            //    Console.ReadLine();
-            //    return;
-            //}
-
-            Console.WriteLine($"\nCaixa \"{caixaAtualizado.etiqueta}\" atualizado com exito!");
+            Console.WriteLine($"\nCaixa \"{caixaAtualizada.etiqueta}\" atualizada com êxito!");
             Console.ReadLine();
         }
-        
 
         public void ExcluirCaixas()
         {
@@ -106,19 +96,19 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloCaixas
 
             VisualizarCaixas(false);
 
-            Console.WriteLine("Escolha a Caixa que deseja excluir: ");
-            string caixaSelecionado = Console.ReadLine();
+            Console.WriteLine("Escolha a Etiqueta da Caixa que deseja excluir: ");
+            string etiquetaSelecionada = Console.ReadLine();
 
-            //bool conseguiuExcluir = repositorioAmigo.ExcluirAmigo(amigoSelecionado);
+            bool conseguiuExcluir = repositorioCaixa.ExcluirCaixa(etiquetaSelecionada);
 
-            //if (!conseguiuExcluir)
-            //{
-            //    Console.WriteLine("Não foi possivel encontrar o amigo");
-            //    Console.ReadLine();
-            //    return;
-            //}
+            if (!conseguiuExcluir)
+            {
+                Console.WriteLine("Não foi possível encontrar a caixa");
+                Console.ReadLine();
+                return;
+            }
 
-            Console.WriteLine($"\nCaixa excluído com sucesso!");
+            Console.WriteLine($"\nCaixa excluída com sucesso!");
             Console.ReadLine();
         }
 
