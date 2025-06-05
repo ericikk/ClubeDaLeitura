@@ -29,7 +29,7 @@ public abstract class TelaBase
         return opcaoEscolhida;
     }
 
-    public void CadastrarRegistro()
+    public virtual void CadastrarRegistro()
     {
         ExibirCabecalho();
 
@@ -63,7 +63,7 @@ public abstract class TelaBase
         Console.ReadLine();
     }
 
-    public void EditarRegistro()
+    public virtual void EditarRegistro()
     {
         ExibirCabecalho();
 
