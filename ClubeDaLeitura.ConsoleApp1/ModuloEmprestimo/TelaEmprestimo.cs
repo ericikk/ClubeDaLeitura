@@ -1,6 +1,4 @@
-﻿
-
-using ClubeDaLeitura.ConsoleApp.Compartilhado;
+﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
 using ClubeDaLeitura.ConsoleApp.ModuloAmigo;
 using ClubeDaLeitura.ConsoleApp.ModuloRevista;
 
@@ -39,7 +37,7 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloEmprestimo
             return opcaoEscolhida;
         }
 
-        public override void CadastrarRegistro()
+        public void CadastrarEmprestimo()
         {
             ExibirCabecalho();
 
@@ -89,20 +87,68 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloEmprestimo
                 }
             }
 
+            novoRegistro.Revista.Status = "Emprestada";
+
             repositorio.CadastrarRegistro(novoRegistro);
 
             Console.WriteLine($"\n{nomeEntidade} cadastrado com sucesso!");
             Console.ReadLine();
         }
-        
 
+        public void DevolverEmprestimo()
+        {
+            ExibirCabecalho();
 
+            Console.WriteLine($"Devolução de {nomeEntidade}");
 
+            Console.WriteLine();
+
+            VisualizarEmprestimosAtivos();
+
+            Console.Write("Digite o ID do emprestimo que deseja concluir: ");
+            int idEmprestimo = Convert.ToInt32(Console.ReadLine());
+
+            Emprestimo emprestimoSelecionado = (Emprestimo)repositorio.SelecionarRegistroPorId(idEmprestimo);
+
+            if (emprestimoSelecionado == null)
+            {
+
+                Console.WriteLine();
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("O empréstimo selecionado não existe!");
+                Console.ResetColor();
+
+                Console.Write("\nDigite ENTER para continuar...");
+                Console.ReadLine();
+
+                
+                return;
+
+            }
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.Write("Deseja confirmar a conclusão do empréstimo? (s/N)");
+            Console.ResetColor();
+
+            string resposta = Console.ReadLine()!;
+
+            if (resposta.ToUpper() == "S")
+            {
+                emprestimoSelecionado.Status = "Concluído";
+                emprestimoSelecionado.Revista.Status = "Disponível";
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"\n{nomeEntidade} concluído com sucesso!");
+                Console.ResetColor();
+                Console.ReadLine();
+            }
+        }
 
 
         public override void VisualizarRegistros(bool exibirCabecalho)
         {
-            if (exibirCabecalho == true)
+            if (exibirCabecalho)
                 ExibirCabecalho();
 
             Console.WriteLine("Visualização de Empréstimos");
@@ -128,7 +174,7 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloEmprestimo
 
                 Console.WriteLine(
                  "{0, -10} | {1, -30} | {2, -30} | {3, -25} | {4, -25} | {5, -15}",
-                    e.Id, e.Amigo.Nome, e.Revista.Titulo, e.DataEmprestimo.ToShortDateString, e.DataDevolucao.ToShortDateString, e.Status
+                    e.Id, e.Amigo.Nome, e.Revista.Titulo, e.DataEmprestimo.ToShortDateString(), e.DataDevolucao.ToShortDateString(), e.Status
                 );
 
                 Console.ResetColor();
@@ -137,7 +183,43 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloEmprestimo
             Console.ReadLine();
         }
 
-        protected override Emprestimo ObterDados()
+        private void VisualizarEmprestimosAtivos()
+        {
+          
+
+            Console.WriteLine("Visualização de Empréstimos Ativos");
+
+            Console.WriteLine();
+
+            Console.WriteLine(
+                "{0, -10} | {1, -30} | {2, -30} | {3, -25} | {4, -25} | {5, -15}",
+                "Id", "Amigo", "Revista", "Data do Empréstimo", "Data Devolução", "Status"
+            );
+
+            EntidadeBase[] emprestimosAtivos = repositorioEmprestimo.SelecionarEmprestimosAtivos();
+
+            for (int i = 0; i < emprestimosAtivos.Length; i++)
+            {
+                Emprestimo e = (Emprestimo)emprestimosAtivos[i];
+
+                if (e == null)
+                    continue;
+
+                if (e.Status == "Atrasado")
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+                Console.WriteLine(
+                 "{0, -10} | {1, -30} | {2, -30} | {3, -25} | {4, -25} | {5, -15}",
+                    e.Id, e.Amigo.Nome, e.Revista.Titulo, e.DataEmprestimo.ToShortDateString(), e.DataDevolucao.ToShortDateString(), e.Status
+                );
+
+                Console.ResetColor();
+            }
+
+            Console.WriteLine();
+        }
+
+        protected override EntidadeBase ObterDados()
         {
             VisualizarAmigos();
 

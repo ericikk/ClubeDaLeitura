@@ -1,6 +1,4 @@
-﻿
-
-using ClubeDaLeitura.ConsoleApp.Compartilhado;
+﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
 using ClubeDaLeitura.ConsoleApp.ModuloRevista;
 
 namespace ClubeDaLeitura.ConsoleApp1.ModuloEmprestimo
@@ -18,7 +16,7 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloEmprestimo
                 if (emprestimoAtual == null)
                     continue;
 
-                if (emprestimoAtual.Status == "Disponível" || emprestimoAtual.Status == "Atrasado")
+                if (emprestimoAtual.Status == "Aberto" || emprestimoAtual.Status == "Atrasado")
                     contadorEmprestimosAtivos++;
             }
 
@@ -33,9 +31,10 @@ namespace ClubeDaLeitura.ConsoleApp1.ModuloEmprestimo
                 if (emprestimoAtual == null)
                     continue;
 
-                if (emprestimoAtual.Status == "Disponível" || emprestimoAtual.Status == "Atrasado")
+                if (emprestimoAtual.Status == "Aberto" || emprestimoAtual.Status == "Atrasado")
                 {
-                    emprestimosAtivos[contadorAuxiliar] = (Emprestimo)registros[i];
+                    emprestimosAtivos[contadorAuxiliar] = emprestimoAtual;
+                    contadorAuxiliar++; // Corrigido: incrementar o contador
                 }
             }
 
