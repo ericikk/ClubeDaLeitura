@@ -1,12 +1,15 @@
 ﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
-
+using ClubeDaLeitura.ConsoleApp.ModuloEmprestimo;
 
 namespace ClubeDaLeitura.ConsoleApp.ModuloAmigo;
 
 public class TelaAmigo : TelaBase
 {
-    public TelaAmigo(RepositorioAmigo repositorio) : base("Amigo", repositorio)
+    private RepositorioEmprestimo repositorioEmprestimo;
+
+    public TelaAmigo(RepositorioAmigo repositorio, RepositorioEmprestimo repositorioEmprestimo) : base("Amigo", repositorio)
     {
+        this.repositorioEmprestimo = repositorioEmprestimo;
     }
 
     public override void CadastrarRegistro()
@@ -64,7 +67,10 @@ public class TelaAmigo : TelaBase
 
         repositorio.CadastrarRegistro(novoRegistro);
 
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"\n{nomeEntidade} cadastrado com sucesso!");
+        Console.ResetColor();
+
         Console.ReadLine();
     }
 
@@ -135,10 +141,12 @@ public class TelaAmigo : TelaBase
 
         repositorio.EditarRegistro(idSelecionado, registroAtualizado);
 
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"\n{nomeEntidade} editado com sucesso!");
+        Console.ResetColor();
+
         Console.ReadLine();
     }
-    
 
     public override void VisualizarRegistros(bool exibirCabecalho)
     {
@@ -150,11 +158,13 @@ public class TelaAmigo : TelaBase
         Console.WriteLine();
 
         Console.WriteLine(
-            "{0, -10} | {1, -30} | {2, -30} | {3, -20}",
-            "Id", "Nome", "Responsável", "Telefone"
+            "{0, -10} | {1, -30} | {2, -30} | {3, -20} | {4, -15}",
+            "Id", "Nome", "Responsável", "Telefone", "Multa Ativa"
         );
 
         EntidadeBase[] amigos = repositorio.SelecionarRegistros();
+
+        EntidadeBase[] emprestimos = repositorioEmprestimo.SelecionarRegistros();
 
         for (int i = 0; i < amigos.Length; i++)
         {
@@ -163,11 +173,33 @@ public class TelaAmigo : TelaBase
             if (a == null)
                 continue;
 
+            bool amigoTemMultaAtiva = false;
+
+            for (int j = 0; j < emprestimos.Length; j++)
+            {
+                Emprestimo e = (Emprestimo)emprestimos[j];
+
+                if (e == null)
+                    continue;
+
+                if (a == e.Amigo && e.Multa != null)
+                {
+                    if (!e.MultaPaga)
+                        amigoTemMultaAtiva = true;
+                }
+            }
+
+            string stringMultaAtiva = amigoTemMultaAtiva ? "Sim" : "Não";
+
             Console.WriteLine(
-              "{0, -10} | {1, -30} | {2, -30} | {3, -20}",
-                a.Id, a.Nome, a.NomeResponsavel, a.Telefone
+              "{0, -10} | {1, -30} | {2, -30} | {3, -20} | {4, -15}",
+                a.Id, a.Nome, a.NomeResponsavel, a.Telefone, stringMultaAtiva
             );
         }
+
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.Write($"\nDigite ENTER para continuar...");
+        Console.ResetColor();
 
         Console.ReadLine();
     }
@@ -175,13 +207,13 @@ public class TelaAmigo : TelaBase
     protected override EntidadeBase ObterDados()
     {
         Console.Write("Digite o nome do amigo: ");
-        string nome = Console.ReadLine();
+        string nome = Console.ReadLine()!;
 
         Console.Write("Digite o nome do responsável pelo amigo: ");
-        string nomeResponsavel = Console.ReadLine();
+        string nomeResponsavel = Console.ReadLine()!;
 
         Console.Write("Digite o telefone do amigo ou responsável: ");
-        string telefone = Console.ReadLine();
+        string telefone = Console.ReadLine()!;
 
         Amigo amigo = new Amigo(nome, nomeResponsavel, telefone);
 

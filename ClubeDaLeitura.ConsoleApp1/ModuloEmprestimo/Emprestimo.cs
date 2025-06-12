@@ -2,43 +2,64 @@
 using ClubeDaLeitura.ConsoleApp.ModuloAmigo;
 using ClubeDaLeitura.ConsoleApp.ModuloRevista;
 
-namespace ClubeDaLeitura.ConsoleApp1.ModuloEmprestimo
+namespace ClubeDaLeitura.ConsoleApp.ModuloEmprestimo;
+
+public class Emprestimo : EntidadeBase
 {
-    public class Emprestimo : EntidadeBase
+    public Amigo Amigo { get; set; }
+    public Revista Revista { get; set; }
+    public DateTime DataEmprestimo { get; set; }
+    public DateTime DataDevolucao
     {
-        
-        public Amigo Amigo { get; set; }
-        public Revista Revista { get; set; }
-        public DateTime DataEmprestimo { get; set; }
-        public DateTime DataDevolucao { get; set; }
-
-        public string Status {  get; set; }
-        public Emprestimo(Amigo amigo, Revista revista)
+        get
         {
-            Amigo = amigo;
-            Revista = revista;
-            DataEmprestimo = DateTime.Now;
-            DataDevolucao = DataEmprestimo.AddDays(Revista.Caixa.DiasEmprestimo);
-            Status = "Aberto";
+            return DataEmprestimo.AddDays(Revista.Caixa.DiasEmprestimo);
         }
+    }
+    public string Status { get; set; }
 
-        public override void AtualizarRegistro(EntidadeBase registroAtualizado)
+    public Multa Multa
+    {
+        get
         {
-            Status = "Concluido";
+            if (DateTime.Now <= DataDevolucao)
+                return null;
+
+            TimeSpan diferencaDatas = DateTime.Now.Subtract(DataDevolucao);
+
+            decimal valorMulta = 2.00m * diferencaDatas.Days;
+
+            Multa multa = new Multa(valorMulta);
+
+            return multa;
         }
+    }
 
-        public override string Validar()
-        {
-            string erros = string.Empty;
+    public bool MultaPaga = false;
 
-            if (Amigo == null)
-                erros += "O campo \"Amigo\" é obrigatório.";
+    public Emprestimo(Amigo amigo, Revista revista)
+    {
+        Amigo = amigo;
+        Revista = revista;
+        DataEmprestimo = DateTime.Now;
+        Status = "Aberto";
+    }
 
-            if (Revista == null)
-                erros += "O campo \"Revista\" é obrigatório.";
+    public override void AtualizarRegistro(EntidadeBase registroAtualizado)
+    {
+        Status = "Concluído";
+    }
 
+    public override string Validar()
+    {
+        string erros = string.Empty;
 
-            return erros;
-        }
+        if (Amigo == null)
+            erros += "O campo \"Amigo\" é obrigatório.";
+
+        if (Revista == null)
+            erros += "O campo \"Revista\" é obrigatório.";
+
+        return erros;
     }
 }

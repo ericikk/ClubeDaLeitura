@@ -1,5 +1,5 @@
 ﻿using ClubeDaLeitura.ConsoleApp.Compartilhado;
-using ClubeDaLeitura.ConsoleApp1.ModuloEmprestimo;
+using ClubeDaLeitura.ConsoleApp.ModuloEmprestimo;
 
 namespace ClubeDaLeitura.ConsoleApp;
 
@@ -7,6 +7,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        //teste
         TelaPrincipal telaPrincipal = new TelaPrincipal();
 
         while (true)
@@ -26,6 +27,7 @@ class Program
             if (telaEscolhida is TelaEmprestimo)
             {
                 TelaEmprestimo telaEmprestimo = (TelaEmprestimo)telaEscolhida;
+
                 switch (opcaoEscolhida)
                 {
                     case '1':
@@ -39,9 +41,11 @@ class Program
                     case '3':
                         telaEmprestimo.VisualizarRegistros(true);
                         break;
+                    case '4':
+                        telaEmprestimo.PagarMultas();
+                        break;
                 }
             }
-
             else
             {
                 switch (opcaoEscolhida)
@@ -63,7 +67,6 @@ class Program
                         break;
                 }
             }
-                
         }
     }
 }
